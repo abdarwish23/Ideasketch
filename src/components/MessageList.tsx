@@ -25,7 +25,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
             <div
               key={message.id}
               // Use flex to align messages left/right
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
             >
               <div
                 // Improved styling for message bubbles
