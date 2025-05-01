@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import { useChatContext } from '@/contexts/ChatContext';
 
 const ClientSidebar: React.FC = () => {
-  const { chats, createNewChat, selectChat } = useChatContext();
+  const { chats, createNewChat, selectChat, currentChatId } = useChatContext();
   
   // Convert chats to the format expected by Sidebar
   const chatHistory = chats.map(chat => ({

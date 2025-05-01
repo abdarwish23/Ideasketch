@@ -13,6 +13,7 @@ interface SidebarProps {
   chatHistory: ChatHistoryItem[];
   onSelectChat?: (id: string) => void; // Make optional
   onCreateNewChat?: () => void; // Make optional
+  currentChatId?: string | null; // Add current chat ID to highlight active chat
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
