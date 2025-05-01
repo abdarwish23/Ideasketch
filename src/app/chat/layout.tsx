@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ClientSidebar from '@/components/ClientSidebar';
 import { Menu } from 'react-feather'; // Import Menu icon for better UI
 
@@ -55,7 +55,6 @@ export default function ChatLayout({
         className={`
           flex-1 flex flex-col overflow-hidden
           transition-all duration-300 ease-in-out
-          ${isSidebarCollapsed ? 'lg:pl-3' : 'lg:pl-6'}
         `}
       >
         {/* Mobile menu button */}
@@ -70,7 +69,7 @@ export default function ChatLayout({
         </div>
         
         {/* Main content */}
-        <div className="flex-1 px-4">
+        <div className="flex-1 px-0.5">
           {children}
         </div>
       </main>

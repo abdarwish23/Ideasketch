@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import { useChatContext } from '@/contexts/ChatContext';
 
@@ -17,11 +17,8 @@ const ClientSidebar: React.FC<ClientSidebarProps> = ({ onCollapsedChange }) => {
   // Initialize collapsed state from localStorage if available
   const [isCollapsed, setIsCollapsed] = useState(() => {
     // Only run in the browser environment
-    if (typeof window !== 'undefined') {
-      const savedState = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
-      return savedState === 'true';
-    }
-    return false;
+    const savedState = typeof window !== 'undefined' ? localStorage.getItem(SIDEBAR_COLLAPSED_KEY) : null;
+    return savedState === 'true';
   });
   
   // Handle sidebar toggle
@@ -55,4 +52,3 @@ const ClientSidebar: React.FC<ClientSidebarProps> = ({ onCollapsedChange }) => {
   );
 }
 export default ClientSidebar;
-

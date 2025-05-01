@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect } from 'react';
+import React, { use, useEffect, useRef } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
 import { useChatContext } from '@/contexts/ChatContext';
@@ -12,6 +12,7 @@ interface ChatPageProps {
 export default function ChatPage({ params }: ChatPageProps) {
   const { id: chatId } = use(params);
   const { getChatMessages, addMessageToChat, selectChat, chats } = useChatContext();
+  const messageListRef = useRef<HTMLDivElement>(null);
 
   // Get messages for this specific chat
   const messages = getChatMessages(chatId);
@@ -39,6 +40,7 @@ export default function ChatPage({ params }: ChatPageProps) {
         role: 'assistant',
         content: `You said: "${newMessageContent}". This is a placeholder response.`,
       });
+      messageListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }, 1000);
   };
 
@@ -46,7 +48,7 @@ export default function ChatPage({ params }: ChatPageProps) {
     <div className='flex flex-col h-full'>
       <h1 className='p-4 border-b text-lg font-semibold'>{chatTitle}</h1>
       {/* Message List takes up remaining space */}
-      <MessageList messages={messages} />
+      <MessageList messages={messages} ref={messageListRef} />
       {/* Chat Input with handler connected */}
       <ChatInput onSendMessage={handleSendMessage} />
     </div>
