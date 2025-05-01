@@ -25,7 +25,7 @@ export default function ChatLayout({
       {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-white/10 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-300"
           onClick={() => setIsSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -58,7 +58,7 @@ export default function ChatLayout({
         `}
       >
         {/* Mobile menu button */}
-        <div className="lg:hidden p-4">
+        <div className="lg:hidden p-4 bg-white dark:bg-[#1B1C1D]">
           <button
             className="p-2 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 focus:outline-none"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}

@@ -25,7 +25,7 @@ const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(({ messag
   return (
     // Add background, padding, and max-width for better readability
     <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-white dark:bg-[#1B1C1D]" ref={ref}>
-      <div className="max-w-3xl mx-auto space-y-4 scroll-x h-96">
+      <div className="max-w-3xl mx-auto space-y-4 scroll-x h-[20vh]">
         {messages.length === 0 ? (
           <p className='text-center text-gray-500 dark:text-gray-400'>Start the conversation by typing below.</p>
         ) : (

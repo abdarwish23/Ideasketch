@@ -117,6 +117,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       <button
         onClick={toggleSidebar}
         className={`
+          hidden
+          lg:flex
           absolute top-4 z-10
           ${isCollapsed ? 'left-3' : 'left-60'} 
           w-7 h-7 
