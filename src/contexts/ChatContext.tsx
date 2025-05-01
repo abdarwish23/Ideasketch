@@ -131,8 +131,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   // Select an existing chat
   const selectChat = (id: string) => {
-    setCurrentChatId(id);
-    alert(id)
     router.push(`/chat/${id}`);
   };
 
@@ -169,18 +167,17 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Add log to debug the pathname
     console.log(`Current pathname: ${pathname}`);
-    
+
     if (pathname?.startsWith('/chat/')) {
       const id = pathname.split('/')[2];
       console.log(`Extracted chat ID from URL: ${id}`);
-      
+
       if (id) {
         setCurrentChatId(id);
         console.log(`Updated currentChatId from URL to: ${id}`);
       }
     }
   }, [pathname]);
-
 
   const contextValue: ChatContextType = {
     chats,
