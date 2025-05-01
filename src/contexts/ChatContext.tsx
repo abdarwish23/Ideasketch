@@ -71,11 +71,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // Initialize with demo chats or load from localStorage
   useEffect(() => {
     const storedChats = loadChatsFromLocalStorage();
-    if (storedChats.length > 0) {
-      setChats(storedChats);
-    } else {
-      initializeDemoChats();
-    }
+    setChats(storedChats);
   }, []);
 
   // Save chats to localStorage whenever they change
@@ -85,37 +81,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
   }, [chats]);
 
-  // Initialize with demo chats
-  function initializeDemoChats() {
-    const initialChats: Chat[] = [
-      {
-        id: '1',
-        title: 'Welcome Chat',
-        messages: [
-          {
-            id: '1',
-            role: 'assistant',
-            content: 'Welcome to IdeaSketch! How can I help you today?',
-          },
-        ],
-        createdAt: new Date(),
-      },
-      {
-        id: '2',
-        title: 'Project Ideas',
-        messages: [
-          {
-            id: '1',
-            role: 'assistant',
-            content: "Let's brainstorm some project ideas!",
-          },
-        ],
-        createdAt: new Date(Date.now() - 86400000), // 1 day ago
-      },
-    ];
-    setChats(initialChats);
-  }
-
   // Create a new chat
   const createNewChat = () => {
     const newChatId = Date.now().toString();
@@ -123,18 +88,19 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       id: newChatId,
       title: `New Chat ${chats.length + 1}`,
       messages: [
-        {
-          id: '1',
-          role: 'assistant',
-          content: 'How can I help you today?',
-        },
+        // {
+        //   id: '1',
+        //   role: 'assistant',
+        //   content: 'How can I help you today?!',
+        // },
       ],
       createdAt: new Date(),
     };
-
-    setChats((prevChats) => [newChat, ...prevChats]);
     setCurrentChatId(newChatId);
-    router.push(`/chat/${newChatId}`);
+    setChats((prevChats) => [newChat, ...prevChats]);
+    setTimeout(() => {
+      selectChat(newChatId);
+    }, 300);
   };
 
   // Select an existing chat
@@ -167,7 +133,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           return updatedChat;
         }
         return chat;
-      })
+      }),
     );
     return message.id;
   };
@@ -178,13 +144,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         if (chat.id === chatId) {
           return {
             ...chat,
-            messages: chat.messages.map((msg) =>
-              msg.id === messageId ? { ...msg, content: newContent } : msg
-            ),
+            messages: chat.messages.map((msg) => (msg.id === messageId ? { ...msg, content: newContent } : msg)),
           };
         }
         return chat;
-      })
+      }),
     );
   };
 
