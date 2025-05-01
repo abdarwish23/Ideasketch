@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar"; // Import the Sidebar
-
+import { Providers } from "./providers";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,29 +22,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Placeholder data for Sidebar props
-  // Event handlers removed - will be handled client-side later
-  const placeholderHistory = [
-    { id: '1', title: 'Chat 1' },
-    { id: '2', title: 'Chat 2' },
-  ];
-  // const handleSelectChat = (id: string) => console.log('Selected chat:', id); // Removed
-  // const handleNewChat = () => console.log('Create new chat'); // Removed
-
   return (
     <html lang="en" className="h-full bg-white">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
       >
-        <div className="flex h-full">
-          {/* Pass only serializable data (chatHistory) */}
-          {/* Event handler props (onSelectChat, onCreateNewChat) are removed entirely */}
-          <Sidebar chatHistory={placeholderHistory} />
-          <main className="flex-1 flex flex-col overflow-hidden">
-            {/* Main content area */}
-            {children}
-          </main>
-        </div>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

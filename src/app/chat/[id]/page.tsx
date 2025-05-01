@@ -1,56 +1,54 @@
-'use client'; // Mark as client component for useState and potential data fetching hooks
+'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { use, useEffect } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
-
-// Define message type matching MessageList
-interface Message {
-  id: string;
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-}
+import { useChatContext } from '@/contexts/ChatContext';
 
 interface ChatPageProps {
-  params: { id: string }; // Next.js App Router passes params like this
+  params: React.Usable<{ id: string }>; // Next.js App Router passes params like this
 }
 
 export default function ChatPage({ params }: ChatPageProps) {
-  const { id: chatId } = params;
+  const { id: chatId } = use(params);
+  const { getChatMessages, addMessageToChat, selectChat, chats } = useChatContext();
 
-  // Placeholder state for messages - replace with actual data fetching later
-  const [messages, setMessages] = useState<Message[]>([]);
+  // Get messages for this specific chat
+  const messages = getChatMessages(chatId);
 
+  // Update current chat in context when this page loads
   useEffect(() => {
-    // TODO: Fetch messages for the specific chatId from the database/API
-    console.log(`Fetching messages for chat ID: ${chatId}`);
-    // Simulate fetching initial messages for this specific chat
-    setMessages([
-      { id: 'chat1-1', role: 'assistant', content: `Welcome to chat ${chatId}.` },
-      // Add more placeholder messages if needed
-    ]);
-  }, [chatId]); // Re-fetch if chatId changes
+    selectChat(chatId);
+  }, [chatId, selectChat]);
 
-  // Placeholder handler for sending messages
+  // Get chat title for display
+  const chatTitle = chats.find((chat) => chat.id === chatId)?.title || `Chat ${chatId}`;
+
+  // Handler for sending messages
   const handleSendMessage = (newMessageContent: string) => {
-    const newMessage: Message = {
-      id: Date.now().toString(), // Simple unique ID for now
+    // Add user message to chat
+    addMessageToChat(chatId, {
       role: 'user',
       content: newMessageContent,
-    };
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-    // TODO: Add logic to send message to backend (associated with chatId) and get streaming response
-    console.log(`Sending message in chat ${chatId}: ${newMessageContent}`);
+    });
+
+    // TODO: Add API call for AI response here
+    // For now, just add a mock response after a short delay
+    setTimeout(() => {
+      addMessageToChat(chatId, {
+        role: 'assistant',
+        content: `You said: "${newMessageContent}". This is a placeholder response.`,
+      });
+    }, 1000);
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <h1 className="p-4 border-b text-lg font-semibold">Chat Thread: {chatId}</h1>
+    <div className='flex flex-col h-full'>
+      <h1 className='p-4 border-b text-lg font-semibold'>{chatTitle}</h1>
       {/* Message List takes up remaining space */}
       <MessageList messages={messages} />
-      {/* Chat Input at the bottom */}
-      {/* Pass handleSendMessage to ChatInput later */}
-      <ChatInput />
+      {/* Chat Input with handler connected */}
+      <ChatInput onSendMessage={handleSendMessage} />
     </div>
   );
 }
