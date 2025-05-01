@@ -32,7 +32,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
                 className={`max-w-[75%] px-4 py-2 rounded-lg shadow-sm ${
                   message.role === 'user'
                     ? 'bg-blue-500 text-white' // User message style
-                    : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-100' // Assistant message style
+                    : message.role === 'system' ? 'bg-red-200 text-red-800 dark:bg-red-700 dark:text-red-100 opacity-80' :'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-100' // Assistant message style
                 }`}
               >
                 {/* Basic rendering for now, Markdown support later */}

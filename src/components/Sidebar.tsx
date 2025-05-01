@@ -1,8 +1,7 @@
 'use client'
-'use client'; // Mark as a Client Component
+
 
 import React from 'react';
-import { useTheme } from 'next-themes'; // Import useTheme hook
 
 // Placeholder for chat history items
 interface ChatHistoryItem {
@@ -22,26 +21,16 @@ const Sidebar: React.FC<SidebarProps> = ({
   onSelectChat = () => {},
   onCreateNewChat = () => {},
 }) => {
-  // Use the useTheme hook to get the current theme and setTheme function
-  const { theme, setTheme } = useTheme();
-
   return (
     // Use a slightly darker background, adjust padding, add border color
     <div className='w-64 h-full bg-gray-100 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-3 flex flex-col'>
       {/* Improved button styling */}
+      <h1 className='mb-3 text-center font-bold text-2xl'>Ideasketch</h1>
       <button
         onClick={onCreateNewChat}
         className='mb-3 w-full px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out'
       >
         + New Chat
-      </button>
-
-      {/* Theme Toggle Button */}
-      <button
-        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-        className='mb-3 w-full px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out'
-      >
-        {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
       </button>
 
       {/* Adjusted heading style */}

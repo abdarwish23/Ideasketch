@@ -15,6 +15,8 @@ export default function Home() {
   // Placeholder state for messages - replace with actual logic later
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', role: 'assistant', content: 'Hello! How can I help you today?' },
+    { id: '2', role: 'user', content: 'help me!' },
+    { id: '3', role: 'system', content: 'ERROR: something went wrong' },
     // Add more placeholder messages if needed
   ]);
 
