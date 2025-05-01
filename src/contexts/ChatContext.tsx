@@ -23,8 +23,9 @@ interface ChatContextType {
   currentChatId: string | null;
   createNewChat: () => void;
   selectChat: (id: string) => void;
-  addMessageToChat: (chatId: string, message: Omit<Message, 'id'>) => void;
+  addMessageToChat: (chatId: string, message: Omit<Message, 'id'>) => string;
   getChatMessages: (chatId: string) => Message[];
+  updateMessageContent: (chatId: string, messageId: string, newContent: string) => void;
 }
 
 // Create the context with a default value
@@ -46,26 +47,33 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Initialize with demo chats or load from localStorage
-  useEffect(() => {
-    // Try to load chats from localStorage
+  const loadChatsFromLocalStorage = (): Chat[] => {
     const savedChats = localStorage.getItem('chats');
     if (savedChats) {
       try {
         const parsedChats = JSON.parse(savedChats) as Chat[];
-        // Ensure dates are properly converted back to Date objects
-        const chatsWithDates = parsedChats.map((chat) => ({
+        return parsedChats.map((chat) => ({
           ...chat,
           createdAt: new Date(chat.createdAt),
         }));
-        setChats(chatsWithDates);
       } catch (error) {
         console.error('Failed to parse saved chats:', error);
-        // Fall back to demo chats
-        initializeDemoChats();
+        return [];
       }
+    }
+    return [];
+  };
+
+  const saveChatsToLocalStorage = (chats: Chat[]) => {
+    localStorage.setItem('chats', JSON.stringify(chats));
+  };
+
+  // Initialize with demo chats or load from localStorage
+  useEffect(() => {
+    const storedChats = loadChatsFromLocalStorage();
+    if (storedChats.length > 0) {
+      setChats(storedChats);
     } else {
-      // No saved chats, initialize with demo data
       initializeDemoChats();
     }
   }, []);
@@ -73,7 +81,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // Save chats to localStorage whenever they change
   useEffect(() => {
     if (chats.length > 0) {
-      localStorage.setItem('chats', JSON.stringify(chats));
+      saveChatsToLocalStorage(chats);
     }
   }, [chats]);
 
@@ -134,27 +142,49 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     router.push(`/chat/${id}`);
   };
 
+  const updateChatTitle = (chat: Chat, messageData: Omit<Message, 'id'>): string => {
+    if (chat.title.startsWith('New Chat') && chat.messages.length === 1 && messageData.role === 'user') {
+      return messageData.content.slice(0, 30) + (messageData.content.length > 30 ? '...' : '');
+    }
+    return chat.title;
+  };
+
   // Add a message to a specific chat
   const addMessageToChat = (chatId: string, messageData: Omit<Message, 'id'>) => {
     const message: Message = {
       ...messageData,
-      id: Date.now().toString(),
+      id: typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString(),
     };
 
     setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === chatId
-          ? {
-              ...chat,
-              messages: [...chat.messages, message],
-              // Update title to first user message if it's a new chat with default title
-              title:
-                chat.title.startsWith('New Chat') && chat.messages.length === 1 && messageData.role === 'user'
-                  ? messageData.content.slice(0, 30) + (messageData.content.length > 30 ? '...' : '')
-                  : chat.title,
-            }
-          : chat,
-      ),
+      prevChats.map((chat) => {
+        if (chat.id === chatId) {
+          const updatedChat = {
+            ...chat,
+            messages: [...chat.messages, message],
+            title: updateChatTitle(chat, messageData),
+          };
+          return updatedChat;
+        }
+        return chat;
+      })
+    );
+    return message.id;
+  };
+
+  const updateMessageContent = (chatId: string, messageId: string, newContent: string) => {
+    setChats((prevChats) =>
+      prevChats.map((chat) => {
+        if (chat.id === chatId) {
+          return {
+            ...chat,
+            messages: chat.messages.map((msg) =>
+              msg.id === messageId ? { ...msg, content: newContent } : msg
+            ),
+          };
+        }
+        return chat;
+      })
     );
   };
 
@@ -165,16 +195,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   };
   // Extract current chat ID from pathname if in a chat route
   useEffect(() => {
-    // Add log to debug the pathname
-    console.log(`Current pathname: ${pathname}`);
-
     if (pathname?.startsWith('/chat/')) {
       const id = pathname.split('/')[2];
-      console.log(`Extracted chat ID from URL: ${id}`);
 
       if (id) {
         setCurrentChatId(id);
-        console.log(`Updated currentChatId from URL to: ${id}`);
       }
     }
   }, [pathname]);
@@ -186,6 +211,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     selectChat,
     addMessageToChat,
     getChatMessages,
+    updateMessageContent,
   };
 
   return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;
