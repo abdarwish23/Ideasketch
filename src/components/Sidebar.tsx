@@ -49,17 +49,14 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div className='flex h-full relative'>
-      {/* Collapsed sidebar strip - only visible when sidebar is collapsed */}
       <div
-        className={`h-full bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 
+        className={`h-full bg-neutral dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 
           transition-all duration-300 ease-in-out
           ${isCollapsed ? 'w-12' : 'w-0'}
         `}
       />
-
-      {/* Main sidebar container with transition */}
       <div
-        className={`h-full bg-neutral-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 
+        className={`h-full bg-neutral dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 
           transition-all duration-300 ease-in-out
           ${isCollapsed ? 'w-0 opacity-0' : 'w-64 opacity-100'}
           overflow-hidden
@@ -68,7 +65,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div className='p-4 w-64 flex flex-col h-full'>
           {/* App title */}
           <h1 className='mb-4 text-center font-bold text-2xl text-neutral-800 dark:text-neutral-100'>Ideasketch</h1>
-
           {/* New chat button */}
           <button
             onClick={onCreateNewChat}
@@ -77,10 +73,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             <PlusCircle size={16} />
             <span>New Chat</span>
           </button>
-
           {/* Chat history section */}
           <h2 className='text-xs font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide mb-3 px-1'>Chat History</h2>
-
           {/* Chat list with improved styling */}
           <div className='flex-1 overflow-y-auto -mx-1'>
             {chatHistory.length === 0 ? (
@@ -117,17 +111,17 @@ const Sidebar: React.FC<SidebarProps> = ({
       <button
         onClick={toggleSidebar}
         className={`
-          hidden
-          lg:flex
           absolute top-4 z-10
           ${isCollapsed ? 'left-3' : 'left-60'} 
           w-7 h-7 
           flex items-center justify-center 
-          bg-neutral-100 dark:bg-neutral-800 
+          bg-neutral dark:bg-neutral-800 
           border border-neutral-200 dark:border-neutral-700 
           rounded-full shadow-sm 
           hover:bg-neutral-200 dark:hover:bg-neutral-700 
           transition-all duration-300 ease-in-out
+          hidden
+          lg:flex
         `}
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >

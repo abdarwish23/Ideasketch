@@ -69,7 +69,7 @@ export default function ChatLayout({
         </div>
         
         {/* Main content */}
-        <div className="flex-1 px-0.5">
+        <div className="flex-1">
           {children}
         </div>
       </main>
