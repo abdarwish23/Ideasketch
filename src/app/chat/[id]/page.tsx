@@ -41,12 +41,12 @@ export default function ChatPage({ params }: ChatPageProps) {
         content: `You said: "${newMessageContent}". This is a placeholder response.`,
       });
       messageListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }, 1000);
+    }, 1500);
   };
 
   return (
     <div className='flex flex-col h-full'>
-      <h1 className='p-4 border-b text-lg font-semibold'>{chatTitle}</h1>
+      <h1 className='p-4 text-lg font-bold bg-white dark:bg-[#1B1C1D]'>{chatTitle}</h1>
       {/* Message List takes up remaining space */}
       <MessageList messages={messages} ref={messageListRef} />
       {/* Chat Input with handler connected */}

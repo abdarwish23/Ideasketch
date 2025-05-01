@@ -35,7 +35,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   return (
     <div className='p-4 bg-gray-50 dark:bg-[#1B1C1D] pb-10'>
-      <form onSubmit={handleSubmit} className='max-w-3xl mx-auto flex items-center space-x-3'>
+      <form onSubmit={handleSubmit}  className='max-w-3xl mx-auto flex items-center space-x-3'>
         {/* Input field with state management */}
         <textarea
           ref={textareaRef}
@@ -44,6 +44,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           disabled={isDisabled}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSubmit(e);
+            }
+          }}
         />
         {/* Submit button with disabled state */}
         <button
