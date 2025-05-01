@@ -26,27 +26,56 @@ export default function ChatPage({ params }: ChatPageProps) {
   const chatTitle = chats.find((chat) => chat.id === chatId)?.title || `Chat ${chatId}`;
 
   // Handler for sending messages
-  const handleSendMessage = (newMessageContent: string) => {
+  const handleSendMessage = async (newMessageContent: string) => {
     // Add user message to chat
     addMessageToChat(chatId, {
       role: 'user',
       content: newMessageContent,
     });
 
-    // TODO: Add API call for AI response here
-    // For now, just add a mock response after a short delay
-    setTimeout(() => {
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: newMessageContent }] }],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const aiResponse = data.candidates[0].content.parts[0].text;
+
       addMessageToChat(chatId, {
         role: 'assistant',
-        content: `You said: "${newMessageContent}". This is a placeholder response.`,
+        content: aiResponse,
       });
       messageListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }, 1500);
+    } catch (error) {
+      console.error('Error calling Gemini API:', error);
+      // Handle error appropriately, e.g., display an error message in the UI
+      if (error instanceof Error) {
+        addMessageToChat(chatId, {
+          role: 'system',
+          content: `Error generating response: ${error.message}`,
+        });
+      } else {
+        addMessageToChat(chatId, {
+          role: 'system',
+          content: `Error generating response: An unknown error occurred.`,
+        });
+      }
+    }
   };
 
   return (
     <div className='flex flex-col h-full'>
-      <h1 className='p-4 text-lg font-bold bg-white dark:bg-[#1B1C1D]'>{chatTitle}</h1>
+      <h1 className='p-4 border-b text-lg font-semibold'>{chatTitle}</h1>
       {/* Message List takes up remaining space */}
       <MessageList messages={messages} ref={messageListRef} />
       {/* Chat Input with handler connected */}
