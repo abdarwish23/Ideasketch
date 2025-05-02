@@ -83,8 +83,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   // Create a new chat
   const createNewChat = (redirect = true) => {
-    // const newChatId = Date.now().toString();
-    const newChatId = typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString()
+    const newChatId = Date.now().toString();
+    // const newChatId = typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString()
     const newChat: Chat = {
       id: newChatId,
       title: `New Chat ${chats.length + 1}`,
@@ -106,8 +106,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     router.push(`/chat/${id}`);
   };
 
-  const updateChatTitle = (chat: Chat, messageData: Omit<Message, 'id'>): string => {
-    if (chat.title.startsWith('New Chat') && chat.messages.length === 1 && messageData.role === 'user') {
+ const updateChatTitle = (chat: Chat, messageData: Omit<Message, 'id'>): string => {
+    if (chat.title.startsWith('New Chat') && messageData.role === 'user') {
       return messageData.content.slice(0, 30) + (messageData.content.length > 30 ? '...' : '');
     }
     return chat.title;

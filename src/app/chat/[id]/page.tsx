@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect, useRef } from 'react';
+import React, { use, useEffect, useRef, useState } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
 import { useChatContext } from '@/contexts/ChatContext';
@@ -32,8 +32,16 @@ export default function ChatPage({ params }: ChatPageProps) {
 
   // Get chat title for display
   const chatTitle = chats.find((chat) => chat.id === chatId)?.title || `Chat ${chatId}`;
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [stopGeneration, setStopGeneration] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const processStream = async (response: Response, assistantMessageId: string) => {
+    if (stopGeneration) {
+      console.log('Stop generation detected at start of processStream!');
+      return;
+    }
+
     let fullAssistantResponse = ''; // Accumulate the full response text
     try {
       if (!response.ok) {
@@ -56,7 +64,21 @@ export default function ChatPage({ params }: ChatPageProps) {
       let buffer = '';
 
       while (true) {
+        // if (stopGeneration) {
+        //   console.log('Stop generation detected!');
+        //   setStopGeneration(false); // Reset the state
+        //   console.log('stopGeneration state reset');
+        //   break; // Exit the loop if stopGeneration is true
+        // }
+
         const { value, done } = await reader.read();
+
+        if (stopGeneration) {
+          console.log('Stop generation detected after reader.read()!');
+          setStopGeneration(false); // Reset the state
+          console.log('stopGeneration state reset');
+          break; // Exit the loop if stopGeneration is true
+        }
 
         if (done) {
           // console.log('Stream finished.');
@@ -79,7 +101,7 @@ export default function ChatPage({ params }: ChatPageProps) {
               const parsed = JSON.parse(jsonString);
               const textChunk = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-              if (typeof textChunk === 'string') {
+              if (typeof textChunk === 'string' && !stopGeneration && !abortControllerRef.current?.signal.aborted) {
                 fullAssistantResponse += textChunk;
 
                 // 5. Update the UI incrementally using the context function
@@ -132,6 +154,7 @@ export default function ChatPage({ params }: ChatPageProps) {
               },
             ]),
         }),
+        signal: abortControllerRef.current?.signal,
       });
 
       await processStream(response, assistantMessageId);
@@ -143,6 +166,7 @@ export default function ChatPage({ params }: ChatPageProps) {
 
   // Handler for sending messages - UPDATED FOR STREAMING
   const handleSendMessage = async (newMessageContent: string) => {
+    setStopGeneration(false); // Reset stop state for each new message
     if (!newMessageContent.trim()) {
       console.warn('Empty message content. Not sending to Gemini API.');
       return;
@@ -170,7 +194,9 @@ export default function ChatPage({ params }: ChatPageProps) {
     // Ensure the placeholder is rendered before starting the stream potentially?
     // Might need a slight delay or state update confirmation if updates are too fast.
     await new Promise((resolve) => setTimeout(resolve, 0)); // Microtask delay
-
+    console.log('setIsGenerating(true) called');
+    setIsGenerating(true);
+    abortControllerRef.current = new AbortController();
     try {
       await callGeminiAPI(newMessageContent, assistantMessageId);
     } catch (error) {
@@ -180,16 +206,19 @@ export default function ChatPage({ params }: ChatPageProps) {
         errorMessage = error.message;
       }
       // Add a system error message to the chat
-      addMessageToChat(chatId, {
-        role: 'system',
-        content: `Error generating response: ${errorMessage}`,
-      });
+      if (!errorMessage.includes('BodyStreamBuffer was aborted')) {
+        addMessageToChat(chatId, {
+          role: 'system',
+          content: `Error generating response: ${errorMessage}`,
+        });
+      }
       // Update the placeholder assistant message to show an error state
       // *** Requires `updateMessageContent` to exist in your context ***
-      updateMessageContent(chatId, assistantMessageId, `Sorry, I encountered an error: ${errorMessage}`);
     } finally {
       // Final scroll after streaming is complete or on error
       scrollToChatEnd();
+      setIsGenerating(false);
+      setStopGeneration(false);
     }
   };
 
@@ -203,12 +232,14 @@ export default function ChatPage({ params }: ChatPageProps) {
   };
 
   return (
-    <div className='flex flex-col h-full'>
-      <h1 className='pl-4 lg:p-4 text-lg font-bold bg-white dark:bg-[#1B1C1D]'>{chatTitle}</h1>
+    <div className='flex flex-col h-full bg-white dark:bg-[#1B1C1D] '>
+      <div className='flex items-center justify-between border-b  border-stone-200 dark:border-stone-800  border-solid'>
+        <h1 className='pl-4 lg:p-4 text-lg font-bold'>{chatTitle}</h1>
+      </div>
       {/* Message List takes up remaining space */}
       <MessageList messages={messages} ref={messageListRef} />
       {/* Chat Input with handler connected */}
-      <ChatInput onSendMessage={handleSendMessage} />
+      <ChatInput onSendMessage={handleSendMessage} isGenerating={isGenerating} setStopGeneration={setStopGeneration} abortControllerRef={abortControllerRef} />
     </div>
   );
 }

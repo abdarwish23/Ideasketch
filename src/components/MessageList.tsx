@@ -50,6 +50,7 @@ const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(({ messag
                 {/* Render Markdown */}
                 <div className='whitespace-pre-wrap break-words'>
                   <ReactMarkdown
+                    key={message.id}
                     components={{
                       code({ className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
