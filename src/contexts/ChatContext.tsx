@@ -26,6 +26,8 @@ interface ChatContextType {
   addMessageToChat: (chatId: string, message: Omit<Message, 'id'>) => string;
   getChatMessages: (chatId: string) => Message[];
   updateMessageContent: (chatId: string, messageId: string, newContent: string) => void;
+  deleteChatHistory: () => void;
+  deleteChatById: (chatId: string) => void;
 }
 
 // Create the context with a default value
@@ -83,11 +85,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   // Create a new chat
   const createNewChat = (redirect = true) => {
-    const newChatId = Date.now().toString();
-    // const newChatId = typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString()
+    // const newChatId = Date.now().toString();
+    const newChatId = typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString();
     const newChat: Chat = {
       id: newChatId,
-      title: `New Chat ${chats.length + 1}`,
+      title: `New Chat ${chats.length == 0 ? 1 : chats.length}`,
       messages: [],
       createdAt: new Date(),
     };
@@ -106,7 +108,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     router.push(`/chat/${id}`);
   };
 
- const updateChatTitle = (chat: Chat, messageData: Omit<Message, 'id'>): string => {
+  const updateChatTitle = (chat: Chat, messageData: Omit<Message, 'id'>): string => {
     if (chat.title.startsWith('New Chat') && messageData.role === 'user') {
       return messageData.content.slice(0, 30) + (messageData.content.length > 30 ? '...' : '');
     }
@@ -166,6 +168,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
   }, [pathname]);
 
+  const deleteChatHistory = () => {
+    setChats([]);
+    localStorage.removeItem('chats');
+    setCurrentChatId(null);
+  };
+
+  const deleteChatById = (chatId: string) => {
+    setChats((prevChats) => {
+      const filteredChats = prevChats.filter((chat) => chat.id !== chatId);
+      saveChatsToLocalStorage(filteredChats);
+      return filteredChats;
+    });
+    setCurrentChatId(null);
+  };
   const contextValue: ChatContextType = {
     chats,
     currentChatId,
@@ -174,6 +190,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     addMessageToChat,
     getChatMessages,
     updateMessageContent,
+    deleteChatHistory,
+    deleteChatById,
   };
 
   return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;

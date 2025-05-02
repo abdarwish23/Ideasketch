@@ -18,6 +18,7 @@ export default function ChatPage({ params }: ChatPageProps) {
     updateMessageContent, // <<< IMPORTANT: Assume you add this function to your context (chatId: string, messageId: string, newContent: string) => void
     selectChat,
     chats,
+    createNewChat,
   } = useChatContext();
 
   const messageListRef = useRef<HTMLDivElement>(null);
@@ -28,10 +29,13 @@ export default function ChatPage({ params }: ChatPageProps) {
   // Update current chat in context when this page loads
   useEffect(() => {
     selectChat(chatId);
+    if (!chats.length) {
+      createNewChat();
+    }
   }, [chatId, selectChat]);
 
   // Get chat title for display
-  const chatTitle = chats.find((chat) => chat.id === chatId)?.title || `Chat ${chatId}`;
+  const chatTitle = chats.find((chat) => chat.id === chatId)?.title || `New Chat`;
   const [isGenerating, setIsGenerating] = useState(false);
   const [stopGeneration, setStopGeneration] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);

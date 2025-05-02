@@ -1,5 +1,6 @@
 'use client';
 
+import { useChatContext } from '@/contexts/ChatContext';
 import React, { useState, FormEvent, useRef, useEffect } from 'react';
 
 interface ChatInputProps {
@@ -17,10 +18,15 @@ const ChatInput: React.FC<ChatInputProps> = ({
 }) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { chats, createNewChat } = useChatContext();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (message.trim() && !isGenerating) {
+      if (!chats.length) {
+        createNewChat();
+      }
+
       onSendMessage(message);
       setMessage(''); // Clear input after sending
       if (textareaRef.current) {
@@ -58,7 +64,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         {/* Submit button with disabled state */}
         {isGenerating ? (
           <button
-            className='px-4 py-2 bg-red-500 text-white font-medium rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition duration-150 ease-in-out cursor-pointer'
+            className='px-4 py-2 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:opacity-50 transition-colors duration-200 ease-in-out cursor-pointer'
             onClick={() => {
               setStopGeneration(true);
               setTimeout(() => {
@@ -71,7 +77,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         ) : (
           <button
             type='submit'
-            className='px-4 py-2 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition duration-150 ease-in-out cursor-pointer'
+            className='px-4 py-2 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-500 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 transition-colors duration-200 ease-in-out cursor-pointer'
             disabled={isGenerating || !message.trim()}
           >
             Send

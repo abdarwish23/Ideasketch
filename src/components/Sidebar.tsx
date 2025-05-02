@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, PlusCircle } from 'react-feather';
+import { useChatContext } from '@/contexts/ChatContext';
 
 // Chat history item interface
 interface ChatHistoryItem {
@@ -33,6 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   // Use internal state if no external control is provided
   const [internalIsCollapsed, setInternalIsCollapsed] = useState(defaultCollapsed);
+  const { deleteChatHistory, deleteChatById } = useChatContext();
 
   // Determine if sidebar is collapsed (controlled or uncontrolled)
   const isCollapsed = externalIsCollapsed !== undefined ? externalIsCollapsed : internalIsCollapsed;
@@ -73,12 +75,19 @@ const Sidebar: React.FC<SidebarProps> = ({
             <PlusCircle size={16} />
             <span>New Chat</span>
           </button>
+          {/* Delete chat history button */}
+          <button
+            onClick={deleteChatHistory}
+            className='mb-4 w-full px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md hover:bg-red-700 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-500 transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
+          >
+            <span>Delete History</span>
+          </button>
           {/* Chat history section */}
           <h2 className='text-xs font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide mb-3 px-1'>Chat History</h2>
           {/* Chat list with improved styling */}
           <div className='flex-1 overflow-y-auto -mx-1'>
             {chatHistory.length === 0 ? (
-              <p className='text-sm text-neutral-600 dark:text-neutral-400 px-1'>No chats yet.</p>
+              <p className='text-sm text-neutral-600 dark:text-neutral-400 px-1 animate-pulse'>No chats yet.</p>
             ) : (
               <ul className='space-y-1'>
                 {chatHistory.map((chat) => (
@@ -96,6 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     title={chat.title}
                   >
                     {chat.title}
+                    <button onClick={() => deleteChatById(chat.id)}>Delete</button>
                   </li>
                 ))}
               </ul>
