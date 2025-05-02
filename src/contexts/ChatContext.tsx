@@ -21,7 +21,7 @@ export interface Chat {
 interface ChatContextType {
   chats: Chat[];
   currentChatId: string | null;
-  createNewChat: () => void;
+  createNewChat: (redirect?: boolean) => void;
   selectChat: (id: string) => void;
   addMessageToChat: (chatId: string, message: Omit<Message, 'id'>) => string;
   getChatMessages: (chatId: string) => Message[];
@@ -82,25 +82,23 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }, [chats]);
 
   // Create a new chat
-  const createNewChat = () => {
-    const newChatId = Date.now().toString();
+  const createNewChat = (redirect = true) => {
+    // const newChatId = Date.now().toString();
+    const newChatId = typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString()
     const newChat: Chat = {
       id: newChatId,
       title: `New Chat ${chats.length + 1}`,
-      messages: [
-        // {
-        //   id: '1',
-        //   role: 'assistant',
-        //   content: 'How can I help you today?!',
-        // },
-      ],
+      messages: [],
       createdAt: new Date(),
     };
     setCurrentChatId(newChatId);
     setChats((prevChats) => [newChat, ...prevChats]);
-    setTimeout(() => {
-      selectChat(newChatId);
-    }, 300);
+
+    if (redirect) {
+      setTimeout(() => {
+        selectChat(newChatId);
+      }, 300);
+    }
   };
 
   // Select an existing chat

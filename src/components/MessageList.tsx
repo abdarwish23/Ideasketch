@@ -30,12 +30,11 @@ const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(({ messag
     <div className='flex-1 overflow-y-auto p-4 md:p-6 bg-white dark:bg-[#1B1C1D]' ref={ref}>
       <div className='max-w-3xl mx-auto space-y-4 scroll-x h-[20vh]'>
         {messages.length === 0 ? (
-          <p className='text-center text-gray-500 dark:text-gray-400'>Start the conversation by typing below.</p>
+          <p className='text-center text-gray-500 dark:text-gray-400 animate-pulse font-extralight text-lg '>Start the conversation by typing below.</p>
         ) : (
           messages.map((message) => (
             <div
               key={message.id}
-              // Use flex to align messages left/right
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
             >
               <div
