@@ -84,11 +84,11 @@ export default function ChatPage({ params }: ChatPageProps) {
 
                 // 5. Update the UI incrementally using the context function
                 //    *** Requires `updateMessageContent` to exist in your context ***
-                console.log("updateMessageContent called", chatId, assistantMessageId, fullAssistantResponse);
+                console.log('updateMessageContent called', chatId, assistantMessageId, fullAssistantResponse);
                 updateMessageContent(chatId, assistantMessageId, fullAssistantResponse);
 
                 // Scroll as content arrives - optional, can be jerky
-                messageListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                messageListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
               }
               // Check for finish reason or other metadata if needed
               // const finishReason = parsed?.candidates?.[0]?.finishReason;
@@ -110,7 +110,7 @@ export default function ChatPage({ params }: ChatPageProps) {
   const callGeminiAPI = async (newMessageContent: string, assistantMessageId: string) => {
     try {
       // 3. Use the streamGenerateContent endpoint
-      console.log("newMessageContent before API call:", newMessageContent);
+      console.log('newMessageContent before API call:', newMessageContent);
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${process.env.GEMINI_API_KEY}&alt=sse`, {
         // Using 1.5 Flash, ensure your key has access
         method: 'POST',
@@ -120,7 +120,7 @@ export default function ChatPage({ params }: ChatPageProps) {
         body: JSON.stringify({
           // Prepare context based on previous messages if needed
           contents: messages
-            .filter((msg) => msg.content.trim() !== "") // Filter out empty messages
+            .filter((msg) => msg.content.trim() !== '') // Filter out empty messages
             .map((msg) => ({
               role: msg.role === 'assistant' ? 'model' : 'user',
               parts: [{ text: msg.content }],
@@ -135,7 +135,6 @@ export default function ChatPage({ params }: ChatPageProps) {
       });
 
       await processStream(response, assistantMessageId);
-
     } catch (error) {
       console.log('Error calling Gemini API:', error);
       throw error;
@@ -145,7 +144,7 @@ export default function ChatPage({ params }: ChatPageProps) {
   // Handler for sending messages - UPDATED FOR STREAMING
   const handleSendMessage = async (newMessageContent: string) => {
     if (!newMessageContent.trim()) {
-      console.warn("Empty message content. Not sending to Gemini API.");
+      console.warn('Empty message content. Not sending to Gemini API.');
       return;
     }
 
@@ -154,7 +153,6 @@ export default function ChatPage({ params }: ChatPageProps) {
       return;
     }
 
-    
     // 1. Add user message to chat immediately
     addMessageToChat(chatId, {
       role: 'user',
