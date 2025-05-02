@@ -75,13 +75,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             <PlusCircle size={16} />
             <span>New Chat</span>
           </button>
-          {/* Delete chat history button */}
-          <button
-            onClick={deleteChatHistory}
-            className='mb-4 w-full px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md hover:bg-red-700 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-500 transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
-          >
-            <span>Delete History</span>
-          </button>
           {/* Chat history section */}
           <h2 className='text-xs font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide mb-3 px-1'>Chat History</h2>
           {/* Chat list with improved styling */}
@@ -104,8 +97,15 @@ const Sidebar: React.FC<SidebarProps> = ({
                     `}
                     title={chat.title}
                   >
-                    {chat.title}
-                    <button onClick={() => deleteChatById(chat.id)}>Delete</button>
+                    <div className='flex items-center content-between justify-between'>
+                      {chat.title}
+                      <button
+                        onClick={() => deleteChatById(chat.id)}
+                        className='cursor-pointer ml-2 px-2 py-1 text-xs font-medium rounded-md bg-red-500 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-150 ease-in-out'
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -113,7 +113,16 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           {/* Footer section for future use */}
-          <div className='mt-auto pt-4'>{/* Settings or user info could go here */}</div>
+          <div className='mt-auto pt-4'>
+            {/* Settings or user info could go here */}
+            {/* Delete chat history button */}
+            <button
+              onClick={deleteChatHistory}
+              className='mb-4 w-full px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md hover:bg-red-700 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-500 transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
+            >
+              <span>Delete History</span>
+            </button>
+          </div>
         </div>
       </div>
 
