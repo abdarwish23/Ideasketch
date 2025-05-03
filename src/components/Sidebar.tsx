@@ -142,7 +142,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </button>
                 </div>
                 <div className='py-1 w-5/6 self-center'>
-                  <button className='my-2 w-full py-2  text-white text-base font-medium rounded-md  focus:outline-none hover:ring-2 hover:ring-offset-2  transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'>
+                  <button className='my-2 w-full py-2  text-neutral-800 dark:text-neutral-100 text-base font-medium rounded-md  focus:outline-none hover:ring-2 hover:ring-offset-2  transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'>
                     ideasketch.inc
                   </button>
                 </div>
@@ -158,9 +158,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         className={`
           absolute top-4 z-10
           ${isCollapsed ? 'left-3' : 'left-60'} 
+          
           w-7 h-7 
           flex items-center justify-center 
-          bg-neutral dark:bg-neutral-800 
+          bg-white dark:bg-neutral-800 
           border border-neutral-200 dark:border-neutral-700 
           rounded-full shadow-sm 
           hover:bg-neutral-200 dark:hover:bg-neutral-700 

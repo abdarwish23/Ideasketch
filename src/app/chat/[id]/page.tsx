@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, use } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
 import { useChatContext } from '@/contexts/ChatContext';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function ChatPage({ params }: { params: any }) {
-  const { id: chatId } = params;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const unwrappedParams = use(params) as any;
+  const { id: chatId } = unwrappedParams;
 
   const {
     getChatMessages,
