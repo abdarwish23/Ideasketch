@@ -111,7 +111,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const updateChatTitle = (chat: Chat, messageData: Omit<Message, 'id'>): string => {
     let content: string;
     if (chat.title.startsWith('New Chat') && messageData.role === 'user') {
-      content = messageData.content.slice(0, 22) + (messageData.content.length > 22 ? '...' : '');
+      content = messageData.content.slice(0, 18) + (messageData.content.length > 18 ? '...' : '');
     } else {
       content = chat.title;
     }
