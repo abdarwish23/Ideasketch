@@ -123,24 +123,17 @@ export default function ChatPage({ params }: { params: any }) {
 
   const callAPI = async (newMessageContent: string, assistantMessageId: string) => {
     try {
-      // 3. Use the streamGenerateContent endpoint
-      console.log('newMessageContent before API call:', newMessageContent);
-      const response = await fetch(`https://mcp-patent-agent.onrender.com/api/query/stream`, {
+      const response = await fetch(`/api/chat/generate-stream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer your-secure-api-token-here',
         },
         body: JSON.stringify({
-          // Prepare context based on previous messages if needed
-
-          user_session: {
-            user_id: `user-${assistantMessageId}`,
-            session_id: `session-${assistantMessageId}`,
-          },
-          message: 'what tools do u have access to?',
+          newMessageContent,
+          assistantMessageId,
+          signal: abortControllerRef.current?.signal,
         }),
-        signal: abortControllerRef.current?.signal,
       });
 
       await processStream(response, assistantMessageId);
