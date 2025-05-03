@@ -23,11 +23,10 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (!chats.length) {
+      createNewChat();
+    }
     if (message.trim() && !isGenerating) {
-      if (!chats.length) {
-        createNewChat();
-      }
-
       onSendMessage(message);
       setMessage(''); // Clear input after sending
       if (textareaRef.current) {
@@ -84,7 +83,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
             disabled={isGenerating || !message.trim()}
           >
             {/* Send */}
-            <Send size={18}/>
+            <Send size={18} />
           </button>
         )}
       </form>

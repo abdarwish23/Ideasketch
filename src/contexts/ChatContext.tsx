@@ -89,7 +89,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const newChatId = typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString();
     const newChat: Chat = {
       id: newChatId,
-      title: `New Chat ${chats.length == 0 ? 1 : chats.length}`,
+      title: `New Chat`,
       messages: [],
       createdAt: new Date(),
     };

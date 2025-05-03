@@ -29,10 +29,10 @@ export default function ChatPage({ params }: ChatPageProps) {
   // Update current chat in context when this page loads
   useEffect(() => {
     selectChat(chatId);
-    if (!chats.length) {
+    if (!chats) {
       createNewChat();
     }
-  }, [chatId, selectChat]);
+  }, [chatId, chats, createNewChat, selectChat]);
 
   // Get chat title for display
   const chatTitle = chats.find((chat) => chat.id === chatId)?.title || `New Chat`;

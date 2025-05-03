@@ -132,12 +132,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 }`}
               >
                 <div className='py-1 w-5/6 self-center'>
-                  <button className='my-2 w-full py-2  text-white text-base font-medium rounded-md  focus:outline-none hover:ring-2 hover:ring-offset-2  transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'>
-                    {/* Email: foo@bar.com */}
-                    username
-                  </button>
-                </div>
-                <div className='py-1 w-5/6 self-center'>
                   <button
                     onClick={deleteChatHistory}
                     className='my-2 w-full py-2 bg-red-500 text-white text-base font-medium rounded-md hover:bg-red-700 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-500 transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
@@ -145,6 +139,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                     // className='block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-600 focus:outline-none'
                   >
                     Delete History
+                  </button>
+                </div>
+                <div className='py-1 w-5/6 self-center'>
+                  <button className='my-2 w-full py-2  text-white text-base font-medium rounded-md  focus:outline-none hover:ring-2 hover:ring-offset-2  transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'>
+                    ideasketch.inc
                   </button>
                 </div>
               </div>
