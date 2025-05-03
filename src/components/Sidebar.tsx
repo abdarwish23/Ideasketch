@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, PlusCircle } from 'react-feather';
+import { ChevronLeft, ChevronRight, PlusCircle, User } from 'react-feather';
 import { useChatContext } from '@/contexts/ChatContext';
 
 // Chat history item interface
@@ -34,6 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   // Use internal state if no external control is provided
   const [internalIsCollapsed, setInternalIsCollapsed] = useState(defaultCollapsed);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { deleteChatHistory, deleteChatById } = useChatContext();
 
   // Determine if sidebar is collapsed (controlled or uncontrolled)
@@ -115,13 +116,39 @@ const Sidebar: React.FC<SidebarProps> = ({
           {/* Footer section for future use */}
           <div className='mt-auto pt-4'>
             {/* Settings or user info could go here */}
-            {/* Delete chat history button */}
-            <button
-              onClick={deleteChatHistory}
-              className='mb-4 w-full px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md hover:bg-red-700 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-500 transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
-            >
-              <span>Delete History</span>
-            </button>
+            {/* User Avatar Dropdown */}
+            <div className='relative'>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className='mb-4 w-full px-4 py-2 text-neutral-800 dark:text-white text-base font-medium rounded-md focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-primary transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
+              >
+                <User size={16} />
+                <span></span>
+              </button>
+              {/* Dropdown content (hidden by default) */}
+              <div
+                className={`absolute flex self-center justify-center items-center  flex-col bottom-2 right-0 mb-10 w-full bg-white dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-md shadow-lg z-10 ${
+                  isDropdownOpen ? 'block' : 'hidden'
+                }`}
+              >
+                <div className='py-1 w-5/6 self-center'>
+                  <button className='my-2 w-full py-2  text-white text-base font-medium rounded-md  focus:outline-none hover:ring-2 hover:ring-offset-2  transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'>
+                    {/* Email: foo@bar.com */}
+                    username
+                  </button>
+                </div>
+                <div className='py-1 w-5/6 self-center'>
+                  <button
+                    onClick={deleteChatHistory}
+                    className='my-2 w-full py-2 bg-red-500 text-white text-base font-medium rounded-md hover:bg-red-700 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-500 transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
+
+                    // className='block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-600 focus:outline-none'
+                  >
+                    Delete History
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

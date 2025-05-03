@@ -1,7 +1,8 @@
 'use client';
 
 import { useChatContext } from '@/contexts/ChatContext';
-import React, { useState, FormEvent, useRef, useEffect } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import { Send, Square } from 'react-feather';
 
 interface ChatInputProps {
   onSendMessage?: (message: string) => void;
@@ -64,7 +65,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         {/* Submit button with disabled state */}
         {isGenerating ? (
           <button
-            className='px-4 py-2 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:opacity-50 transition-colors duration-200 ease-in-out cursor-pointer'
+            className='px-6 py-3 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:opacity-50 transition-colors duration-200 ease-in-out cursor-pointer'
             onClick={() => {
               setStopGeneration(true);
               setTimeout(() => {
@@ -72,15 +73,18 @@ const ChatInput: React.FC<ChatInputProps> = ({
               }, 50);
             }}
           >
-            Stop
+            {/* Stop */}
+
+            <Square size={18} />
           </button>
         ) : (
           <button
             type='submit'
-            className='px-4 py-2 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-500 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 transition-colors duration-200 ease-in-out cursor-pointer'
+            className='px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-500 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 transition-colors duration-200 ease-in-out cursor-pointer'
             disabled={isGenerating || !message.trim()}
           >
-            Send
+            {/* Send */}
+            <Send size={18}/>
           </button>
         )}
       </form>
