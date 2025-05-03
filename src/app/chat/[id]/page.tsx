@@ -1,16 +1,13 @@
 'use client';
 
-import React, { use, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
 import { useChatContext } from '@/contexts/ChatContext';
 
-interface ChatPageProps {
-  params: React.Usable<{ id: string }>; // Next.js App Router passes params like this
-}
-
-export default function ChatPage({ params }: ChatPageProps) {
-  const { id: chatId } = use(params);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function ChatPage({ params }: { params: any }) {
+  const { id: chatId } = params;
 
   const {
     getChatMessages,
