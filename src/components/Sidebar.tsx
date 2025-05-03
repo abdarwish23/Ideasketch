@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {/* New chat button */}
           <button
             onClick={onCreateNewChat}
-            className='mb-4 w-full px-4 py-2 bg-primary text-white text-base font-medium rounded-md hover:bg-primary-dark focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-primary transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
+            className='mb-4 w-full px-4 py-2 bg-primary text-neutral-800 dark:text-white text-base font-medium rounded-md hover:bg-primary-dark focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-primary transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
           >
             <PlusCircle size={16} />
             <span>New Chat</span>
