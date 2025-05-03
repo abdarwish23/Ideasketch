@@ -67,13 +67,6 @@ export default function ChatPage({ params }: { params: any }) {
       let buffer = '';
 
       while (true) {
-        // if (stopGeneration) {
-        //   console.log('Stop generation detected!');
-        //   setStopGeneration(false); // Reset the state
-        //   console.log('stopGeneration state reset');
-        //   break; // Exit the loop if stopGeneration is true
-        // }
-
         const { value, done } = await reader.read();
 
         if (stopGeneration) {
@@ -89,20 +82,21 @@ export default function ChatPage({ params }: { params: any }) {
         }
 
         buffer += value;
-        // Process lines separated by newline. Gemini stream sends JSON chunks line by line.
+        // Process lines separated by newline.  stream sends JSON chunks line by line.
         let boundary;
         while ((boundary = buffer.indexOf('\n')) !== -1) {
           const line = buffer.substring(0, boundary).trim();
           buffer = buffer.substring(boundary + 1); // Keep the remainder
-
+          buffer = ''; // Clear the buffer
           if (line.length === 0) continue; // Skip empty lines
 
           // SSE data lines start with "data:". Extract the JSON.
           if (line.startsWith('data:')) {
             const jsonString = line.substring(5).trim(); // Remove "data:" and trim
             try {
+              // Attempt to parse the JSON string
               const parsed = JSON.parse(jsonString);
-              const textChunk = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
+              const textChunk = parsed.content;
 
               if (typeof textChunk === 'string' && !stopGeneration && !abortControllerRef.current?.signal.aborted) {
                 fullAssistantResponse += textChunk;
@@ -115,11 +109,6 @@ export default function ChatPage({ params }: { params: any }) {
                 // Scroll as content arrives - optional, can be jerky
                 messageListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
               }
-              // Check for finish reason or other metadata if needed
-              // const finishReason = parsed?.candidates?.[0]?.finishReason;
-              // if (finishReason && finishReason !== "STOP") {
-              //    console.warn("Generation finished with reason:", finishReason);
-              // }
             } catch (parseError) {
               console.warn('Failed to parse JSON chunk:', line, parseError);
             }
@@ -132,37 +121,31 @@ export default function ChatPage({ params }: { params: any }) {
     }
   };
 
-  const callGeminiAPI = async (newMessageContent: string, assistantMessageId: string) => {
+  const callAPI = async (newMessageContent: string, assistantMessageId: string) => {
     try {
       // 3. Use the streamGenerateContent endpoint
       console.log('newMessageContent before API call:', newMessageContent);
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${process.env.GEMINI_API_KEY}&alt=sse`, {
-        // Using 1.5 Flash, ensure your key has access
+      const response = await fetch(`https://mcp-patent-agent.onrender.com/api/query/stream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: 'Bearer your-secure-api-token-here',
         },
         body: JSON.stringify({
           // Prepare context based on previous messages if needed
-          contents: messages
-            .filter((msg) => msg.content.trim() !== '') // Filter out empty messages
-            .map((msg) => ({
-              role: msg.role === 'assistant' ? 'model' : 'user',
-              parts: [{ text: msg.content }],
-            }))
-            .concat([
-              {
-                role: 'model',
-                parts: [{ text: newMessageContent }],
-              },
-            ]),
+
+          user_session: {
+            user_id: `user-${assistantMessageId}`,
+            session_id: `session-${assistantMessageId}`,
+          },
+          message: 'what tools do u have access to?',
         }),
         signal: abortControllerRef.current?.signal,
       });
 
       await processStream(response, assistantMessageId);
     } catch (error) {
-      console.log('Error calling Gemini API:', error);
+      console.log('Error calling API:', error);
       throw error;
     }
   };
@@ -171,12 +154,7 @@ export default function ChatPage({ params }: { params: any }) {
   const handleSendMessage = async (newMessageContent: string) => {
     setStopGeneration(false); // Reset stop state for each new message
     if (!newMessageContent.trim()) {
-      console.warn('Empty message content. Not sending to Gemini API.');
-      return;
-    }
-
-    if (!process.env.GEMINI_API_KEY) {
-      console.error('Gemini API key is not set in environment variables.');
+      console.warn('Empty message content. Not sending to  API.');
       return;
     }
 
@@ -201,9 +179,9 @@ export default function ChatPage({ params }: { params: any }) {
     setIsGenerating(true);
     abortControllerRef.current = new AbortController();
     try {
-      await callGeminiAPI(newMessageContent, assistantMessageId);
+      await callAPI(newMessageContent, assistantMessageId);
     } catch (error) {
-      console.log('Error calling Gemini API or processing stream:', error);
+      console.log('Error calling  API or processing stream:', error);
       let errorMessage = 'An unknown error occurred.';
       if (error instanceof Error) {
         errorMessage = error.message;

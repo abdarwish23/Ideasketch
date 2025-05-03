@@ -158,7 +158,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         className={`
           absolute top-4 z-10
           ${isCollapsed ? 'left-3' : 'left-60'} 
-          
           w-7 h-7 
           flex items-center justify-center 
           bg-white dark:bg-neutral-800 
@@ -166,7 +165,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           rounded-full shadow-sm 
           hover:bg-neutral-200 dark:hover:bg-neutral-700 
           transition-all duration-300 ease-in-out
-          hidden
           lg:flex
         `}
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
