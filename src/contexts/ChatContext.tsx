@@ -109,10 +109,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   };
 
   const updateChatTitle = (chat: Chat, messageData: Omit<Message, 'id'>): string => {
+    let content: string;
     if (chat.title.startsWith('New Chat') && messageData.role === 'user') {
-      return messageData.content.slice(0, 30) + (messageData.content.length > 30 ? '...' : '');
+      content = messageData.content.slice(0, 22) + (messageData.content.length > 22 ? '...' : '');
+    } else {
+      content = chat.title;
     }
-    return chat.title;
+    return content.charAt(0).toUpperCase() + content.slice(1);
   };
 
   // Add a message to a specific chat

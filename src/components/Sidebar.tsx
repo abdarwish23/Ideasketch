@@ -49,6 +49,10 @@ const Sidebar: React.FC<SidebarProps> = ({
       setInternalIsCollapsed(newState);
     }
   };
+  const deleteChatHistoryHandler = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+    deleteChatHistory();
+  };
 
   return (
     <div className='flex h-full relative'>
@@ -79,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {/* Chat history section */}
           <h2 className='text-xs font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide mb-3 px-1'>Chat History</h2>
           {/* Chat list with improved styling */}
-          <div className='flex-1 overflow-y-auto -mx-1'>
+          <div className='flex-1 overflow-y-auto -mx-1' onClick={() => setIsDropdownOpen(false)}>
             {chatHistory.length === 0 ? (
               <p className='text-sm text-neutral-600 dark:text-neutral-400 px-1 animate-pulse'>No chats yet.</p>
             ) : (
@@ -133,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               >
                 <div className='py-1 w-5/6 self-center'>
                   <button
-                    onClick={deleteChatHistory}
+                    onClick={deleteChatHistoryHandler}
                     className='my-2 w-full py-2 bg-red-500 text-white text-base font-medium rounded-md hover:bg-red-700 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-500 transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
 
                     // className='block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-600 focus:outline-none'
@@ -142,7 +146,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </button>
                 </div>
                 <div className='py-1 w-5/6 self-center'>
-                  <button className='my-2 w-full py-2  text-neutral-800 dark:text-neutral-100 text-base font-medium rounded-md  focus:outline-none hover:ring-2 hover:ring-offset-2  transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'>
+                  <button className='my-2 w-full py-2  text-neutral-800 dark:text-neutral-100 text-base font-medium rounded-md  focus:outline-none hover:ring-2 hover:ring-offset-2  transition duration-150 ease-in-out flex items-center justify-center gap-2'>
                     ideasketch.inc
                   </button>
                 </div>
@@ -167,6 +171,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           transition-all duration-300 ease-in-out
           hidden
           lg:flex
+          hover:cursor-pointer
         `}
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
