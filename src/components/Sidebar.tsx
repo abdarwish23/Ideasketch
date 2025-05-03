@@ -63,7 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         `}
       />
       <div
-        className={`h-full bg-neutral dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 
+        className={`h-full backdrop-blur-sm border-r border-neutral-200 dark:border-neutral-700 
           transition-all duration-300 ease-in-out
           ${isCollapsed ? 'w-0 opacity-0' : 'w-64 opacity-100'}
           overflow-hidden

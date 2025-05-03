@@ -25,7 +25,7 @@ export default function ChatLayout({
       {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-white/10 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-white/10 backdrop-blur-xs z-30 lg:hidden transition-opacity duration-300"
           onClick={() => setIsSidebarOpen(false)}
           aria-hidden="true"
         />
