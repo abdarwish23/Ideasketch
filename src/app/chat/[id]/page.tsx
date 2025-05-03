@@ -20,10 +20,15 @@ export default function ChatPage({ params }: { params: any }) {
     createNewChat,
   } = useChatContext();
 
-  const messageListRef = useRef<HTMLDivElement>(null);
-
   // Get messages for this specific chat
   const messages = getChatMessages(chatId);
+
+  const messageListRef = useRef<HTMLDivElement>(null);
+  // Get chat title for display
+  const chatTitle = chats.find((chat) => chat.id === chatId)?.title || `New Chat`;
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [stopGeneration, setStopGeneration] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Update current chat in context when this page loads
   useEffect(() => {
@@ -32,12 +37,6 @@ export default function ChatPage({ params }: { params: any }) {
       createNewChat();
     }
   }, [chatId, chats, createNewChat, selectChat]);
-
-  // Get chat title for display
-  const chatTitle = chats.find((chat) => chat.id === chatId)?.title || `New Chat`;
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [stopGeneration, setStopGeneration] = useState(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
 
   const processStream = async (response: Response, assistantMessageId: string) => {
     if (stopGeneration) {
