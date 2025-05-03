@@ -159,12 +159,13 @@ const Sidebar: React.FC<SidebarProps> = ({
           absolute top-4 z-10
           ${isCollapsed ? 'left-3' : 'left-60'} 
           w-7 h-7 
-          flex items-center justify-center 
+          items-center justify-center 
           bg-white dark:bg-neutral-800 
           border border-neutral-200 dark:border-neutral-700 
           rounded-full shadow-sm 
           hover:bg-neutral-200 dark:hover:bg-neutral-700 
           transition-all duration-300 ease-in-out
+          hidden
           lg:flex
         `}
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
