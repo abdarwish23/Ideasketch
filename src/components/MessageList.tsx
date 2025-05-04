@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useRef, useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -113,7 +113,7 @@ const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(({ messag
                 }`}
               >
                 {/* Render Markdown with improved table support */}
-                <div className='whitespace-pre-wrap break-words animate-fadeIn'>
+                <div className={`whitespace-pre-wrap break-words ${message.content === '...' ? 'animate-pulse font-bold text-2xl' : 'animate-fadeIn'}`}>
                   <ReactMarkdown
                     key={message.id}
                     remarkPlugins={[remarkGfm]} // Add remark-gfm plugin for tables
