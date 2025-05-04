@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className='flex h-full relative'>
+    <div className='flex h-full relative bg-neutral dark:bg-neutral-800'>
       <div
         className={`h-full bg-neutral dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 
           transition-all duration-300 ease-in-out
