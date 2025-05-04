@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, PlusCircle, User } from 'react-feather';
 import { useChatContext } from '@/contexts/ChatContext';
+// import { useUser } from '@/hooks/UseUser';
 
 // Chat history item interface
 interface ChatHistoryItem {
@@ -35,7 +36,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   // Use internal state if no external control is provided
   const [internalIsCollapsed, setInternalIsCollapsed] = useState(defaultCollapsed);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { deleteChatHistory, deleteChatById } = useChatContext();
+  const { deleteChatHistory, deleteChatById, userName } = useChatContext();
+
 
   // Determine if sidebar is collapsed (controlled or uncontrolled)
   const isCollapsed = externalIsCollapsed !== undefined ? externalIsCollapsed : internalIsCollapsed;
@@ -127,6 +129,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 className='mb-4 w-full px-4 py-2 text-neutral-800 dark:text-white text-base font-medium rounded-md focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-primary transition duration-150 ease-in-out hover:cursor-pointer flex items-center justify-center gap-2'
               >
                 <User size={16} />
+                {userName}
                 <span></span>
               </button>
               {/* Dropdown content (hidden by default) */}

@@ -124,10 +124,6 @@ export default function ChatPage() {
     try {
       const response = await fetch(`/api/chat/generate-stream`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer your-secure-api-token-here',
-        },
         body: JSON.stringify({
           newMessageContent,
           userId,
