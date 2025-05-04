@@ -25,7 +25,7 @@ export default function ChatPage() {
 
   const messageListRef = useRef<HTMLDivElement>(null);
   // Get chat title for display
-  const chatTitle = chats.find((chat) => chat.id === chatId)?.title || `New Chat`;
+  const chatTitle = chats.find((chat) => chat.id === chatId)?.fullTitle || `New Chat`;
   const [isGenerating, setIsGenerating] = useState(false);
   const [stopGeneration, setStopGeneration] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);

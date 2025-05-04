@@ -16,6 +16,7 @@ export interface Message {
 export interface Chat {
   id: string;
   title: string;
+  fullTitle: string;
   messages: Message[];
   createdAt: Date;
 }
@@ -84,13 +85,16 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     return [];
   };
 
-  const saveUserNameToLocalStorage = useCallback((username: string | null): string | null => {
-    if (username && username !== 'null') {
-      localStorage.setItem('username', username);
-      setUserName(savedUsername || '');
-    }
-    return username;
-  }, [savedUsername]);
+  const saveUserNameToLocalStorage = useCallback(
+    (username: string | null): string | null => {
+      if (username && username !== 'null') {
+        localStorage.setItem('username', username);
+        setUserName(savedUsername || '');
+      }
+      return username;
+    },
+    [savedUsername],
+  );
 
   const saveUserIdToLocalStorage = (): string => {
     const newId = typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString();
@@ -128,6 +132,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const newChat: Chat = {
       id: newChatId,
       title: `New Chat`,
+      fullTitle: `New Chat`,
       messages: [],
       createdAt: new Date(),
     };
@@ -146,17 +151,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     router.push(`/chat/${id}`);
   };
 
-  const updateChatTitle = (chat: Chat, messageData: Omit<Message, 'id'>): string => {
-    let content: string;
-    if (chat.title.startsWith('New Chat') && messageData.role === 'user') {
-      content = messageData.content.slice(0, 18) + (messageData.content.length > 18 ? '...' : '');
-    } else {
-      content = chat.title;
-    }
-    return content.charAt(0).toUpperCase() + content.slice(1);
-  };
-
-  // Add a message to a specific chat
   const addMessageToChat = (chatId: string, messageData: Omit<Message, 'id'>) => {
     const message: Message = {
       ...messageData,
@@ -166,11 +160,31 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     setChats((prevChats) =>
       prevChats.map((chat) => {
         if (chat.id === chatId) {
+          let nextTitle = chat.title; // Default to current title
+          let nextFullTitle = chat.fullTitle; // Default to current full title
+
+          // Check if titles need updating based on the FIRST user message
+          if (chat.title.startsWith('New Chat') && messageData.role === 'user') {
+            const content = messageData.content;
+            const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+            // Calculate potentially truncated title
+            const truncatedContent = content.length > 18 ? content.slice(0, 18) + '...' : content;
+            nextTitle = capitalize(truncatedContent);
+
+            // Calculate the actual full title from the content
+            const truncatedFullContent = content.length > 40 ? content.slice(0, 40) + '...' : content;
+            nextFullTitle = capitalize(truncatedFullContent);
+          }
+
+          // Construct the updated chat object
           const updatedChat = {
             ...chat,
             messages: [...chat.messages, message],
-            title: updateChatTitle(chat, messageData),
+            title: nextTitle, // Assign the determined display title
+            fullTitle: nextFullTitle, // Assign the determined full title
           };
+          console.log('updatedChat :>> ', updatedChat);
           return updatedChat;
         }
         return chat;
