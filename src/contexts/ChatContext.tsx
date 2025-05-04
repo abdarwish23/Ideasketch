@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 // Define types for our chat data
@@ -21,6 +21,7 @@ export interface Chat {
 interface ChatContextType {
   chats: Chat[];
   currentChatId: string | null;
+  userId: string;
   createNewChat: (redirect?: boolean) => void;
   selectChat: (id: string) => void;
   addMessageToChat: (chatId: string, message: Omit<Message, 'id'>) => string;
@@ -28,6 +29,8 @@ interface ChatContextType {
   updateMessageContent: (chatId: string, messageId: string, newContent: string) => void;
   deleteChatHistory: () => void;
   deleteChatById: (chatId: string) => void;
+  saveUserIdToLocalStorage: () => string;
+  loadUserIdToLocalStorage: () => string;
 }
 
 // Create the context with a default value
@@ -45,9 +48,18 @@ export function useChatContext() {
 // The provider component
 export function ChatProvider({ children }: { children: ReactNode }) {
   const [chats, setChats] = useState<Chat[]>([]);
+  const [userId, setUserId] = useState<string>('');
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
+
+  const loadUserIdToLocalStorage = useCallback((): string => {
+    const loadUserId = localStorage.getItem('userId');
+    if (!loadUserId) {
+      return saveUserIdToLocalStorage();
+    }
+    return loadUserId;
+  }, []);
 
   const loadChatsFromLocalStorage = (): Chat[] => {
     const savedChats = localStorage.getItem('chats');
@@ -66,6 +78,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     return [];
   };
 
+  const saveUserIdToLocalStorage = (): string => {
+    const newId = typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString();
+    localStorage.setItem('userId', newId);
+    return newId;
+  };
+
   const saveChatsToLocalStorage = (chats: Chat[]) => {
     localStorage.setItem('chats', JSON.stringify(chats));
   };
@@ -73,8 +91,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // Initialize with demo chats or load from localStorage
   useEffect(() => {
     const storedChats = loadChatsFromLocalStorage();
+    const userId = loadUserIdToLocalStorage();
     setChats(storedChats);
-  }, []);
+    setUserId(userId);
+  }, [loadUserIdToLocalStorage]);
 
   // Save chats to localStorage whenever they change
   useEffect(() => {
@@ -188,6 +208,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const contextValue: ChatContextType = {
     chats,
     currentChatId,
+    userId,
     createNewChat,
     selectChat,
     addMessageToChat,
@@ -195,6 +216,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     updateMessageContent,
     deleteChatHistory,
     deleteChatById,
+    saveUserIdToLocalStorage,
+    loadUserIdToLocalStorage,
   };
 
   return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;

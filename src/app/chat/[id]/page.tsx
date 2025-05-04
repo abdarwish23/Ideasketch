@@ -1,15 +1,14 @@
 'use client';
 
-import React, { useEffect, useRef, useState, use } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
 import { useChatContext } from '@/contexts/ChatContext';
+import { useParams } from 'next/navigation';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function ChatPage({ params }: { params: any }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const unwrappedParams = use(params) as any;
-  const { id: chatId } = unwrappedParams;
+export default function ChatPage() {
+  const params = useParams<{ id: string }>();
+  const chatId = params.id;
 
   const {
     getChatMessages,
@@ -17,6 +16,7 @@ export default function ChatPage({ params }: { params: any }) {
     updateMessageContent, // <<< IMPORTANT: Assume you add this function to your context (chatId: string, messageId: string, newContent: string) => void
     selectChat,
     chats,
+    userId,
     createNewChat,
   } = useChatContext();
 
@@ -120,7 +120,7 @@ export default function ChatPage({ params }: { params: any }) {
     }
   };
 
-  const callAPI = async (newMessageContent: string, assistantMessageId: string) => {
+  const callAPI = async (newMessageContent: string, assistantMessageId: string, sessionId: string) => {
     try {
       const response = await fetch(`/api/chat/generate-stream`, {
         method: 'POST',
@@ -130,8 +130,8 @@ export default function ChatPage({ params }: { params: any }) {
         },
         body: JSON.stringify({
           newMessageContent,
-          assistantMessageId,
-          signal: abortControllerRef.current?.signal,
+          userId,
+          sessionId,
         }),
       });
 
@@ -171,7 +171,7 @@ export default function ChatPage({ params }: { params: any }) {
     setIsGenerating(true);
     abortControllerRef.current = new AbortController();
     try {
-      await callAPI(newMessageContent, assistantMessageId);
+      await callAPI(newMessageContent, assistantMessageId, chatId);
     } catch (error) {
       console.log('Error calling  API or processing stream:', error);
       let errorMessage = 'An unknown error occurred.';

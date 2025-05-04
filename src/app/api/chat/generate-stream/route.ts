@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 
-const callAPI = async (newMessageContent: string, assistantMessageId: string) => {
+const callAPI = async (newMessageContent: string, userId: string, sessionId: string) => {
   try {
-    console.log('newMessageContent before API call:', newMessageContent);
+    console.log('newMessageContent :>>', newMessageContent);
+    console.log('userId :>> ', userId);
+    console.log('sessionId :>> ', sessionId);
+    // throw new Error(`newMessageContent: ${newMessageContent} - userId:${userId} - sessionId:${sessionId}`);
 
     // Stream the response from the external API
+
     const response = await fetch(`https://mcp-patent-agent.onrender.com/api/query/stream`, {
       method: 'POST',
       headers: {
@@ -13,8 +17,8 @@ const callAPI = async (newMessageContent: string, assistantMessageId: string) =>
       },
       body: JSON.stringify({
         user_session: {
-          user_id: `user-${assistantMessageId}`,
-          session_id: `session-${assistantMessageId}`,
+          user_id: `user-${userId}`,
+          session_id: `session-${sessionId}`,
         },
         message: newMessageContent, // Use the actual newMessageContent for the message
       }),
@@ -33,13 +37,13 @@ const callAPI = async (newMessageContent: string, assistantMessageId: string) =>
 
 export async function POST(request: Request) {
   try {
-    const { newMessageContent, assistantMessageId } = await request.json();
-    if (!newMessageContent || !assistantMessageId) {
+    const { newMessageContent, userId, sessionId } = await request.json();
+    if (!newMessageContent || !userId || !sessionId) {
       return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
     }
 
     // Call the external API and get the stream
-    const stream = await callAPI(newMessageContent, assistantMessageId);
+    const stream = await callAPI(newMessageContent, userId, sessionId);
 
     // Create a new Response to stream the data back to the client
     const readableStream = new ReadableStream({
@@ -74,8 +78,9 @@ export async function POST(request: Request) {
     return new NextResponse(readableStream, {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Internal error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return NextResponse.json({ error: `Internal Server Error`, message: String((error as any).message) }, { status: 500 });
   }
 }
