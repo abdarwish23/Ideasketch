@@ -4,7 +4,7 @@ import React, { createContext, useState, useContext, useEffect, ReactNode, useCa
 import { useRouter, usePathname } from 'next/navigation';
 import { useUser } from '@/hooks/UseUser';
 
-const NAME_QUERY = 'what is my name just name return if not return null';
+const NAME_QUERY = `What is my name? If it's found, return just the name. If not found, return null.`;
 
 // Define types for our chat data
 export interface Message {
