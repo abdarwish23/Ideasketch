@@ -13,7 +13,7 @@ export default function ChatLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // State for sidebar collapsed state (expanded/collapsed)
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
 
   // Handle sidebar collapse state changes from ClientSidebar
   const handleSidebarCollapsedChange = (collapsed: boolean) => {

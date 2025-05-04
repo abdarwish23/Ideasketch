@@ -201,9 +201,9 @@ export default function ChatPage() {
   };
 
   return (
-    <div className='flex flex-col h-full bg-white dark:bg-[#1B1C1D] '>
+    <div className='flex flex-col h-full bg-white dark:bg-[#1B1C1D]'>
       <div className='flex items-center justify-between border-b  border-stone-200 dark:border-stone-800  border-solid'>
-        <h1 className='pl-4 lg:p-4 text-lg font-bold'>{chatTitle}</h1>
+        <h1 className='hidden lg:flex pl-4 lg:p-4 text-lg font-bold'>{chatTitle}</h1>
       </div>
       {/* Message List takes up remaining space */}
       <MessageList messages={messages} ref={messageListRef} />

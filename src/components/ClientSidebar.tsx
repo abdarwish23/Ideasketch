@@ -17,7 +17,7 @@ interface ClientSidebarProps {
   initialCollapsed?: boolean;
 }
 
-const ClientSidebar: React.FC<ClientSidebarProps> = ({ onCollapsedChange, initialCollapsed = false }) => {
+const ClientSidebar: React.FC<ClientSidebarProps> = ({ onCollapsedChange, initialCollapsed = true }) => {
   const { chats, createNewChat, selectChat, currentChatId } = useChatContext();
 
   const [isHydrated, setIsHydrated] = useState(false);
@@ -28,7 +28,7 @@ const ClientSidebar: React.FC<ClientSidebarProps> = ({ onCollapsedChange, initia
 
     if (isMobile) {
       setIsCollapsed(false); // Force sidebar to be expanded on mobile
-    } else if (initialCollapsed === false) {
+    } else if (initialCollapsed === true) {
       try {
         const savedState = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
         setIsCollapsed(savedState === 'true');
