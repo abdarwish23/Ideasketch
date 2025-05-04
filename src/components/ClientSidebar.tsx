@@ -24,7 +24,7 @@ const ClientSidebar: React.FC<ClientSidebarProps> = ({ onCollapsedChange, initia
   const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
 
   useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const isMobile = window.matchMedia('(max-width: 1000px)').matches;
 
     if (isMobile) {
       setIsCollapsed(false); // Force sidebar to be expanded on mobile
