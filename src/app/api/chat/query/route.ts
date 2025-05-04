@@ -14,8 +14,6 @@ interface APIRequest {
 }
 
 interface APIResponse {
-  // Add specific response properties based on your API
-  // This is a placeholder - update with actual response structure
   data: unknown;
   success: boolean;
   error?: string;
@@ -35,7 +33,7 @@ const API_CONFIG = {
  * @returns Promise containing the API response
  * @throws Error if the API request fails
  */
-export const callAPI = async (message: string, userId: string, sessionId?: string): Promise<APIResponse> => {
+const callAPI = async (message: string, userId: string, sessionId?: string): Promise<APIResponse> => {
   try {
     const headers = new Headers({
       'Content-Type': 'application/json',

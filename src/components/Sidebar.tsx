@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, PlusCircle, User } from 'react-feather';
 import { useChatContext } from '@/contexts/ChatContext';
 // import { useUser } from '@/hooks/UseUser';
@@ -37,7 +37,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [internalIsCollapsed, setInternalIsCollapsed] = useState(defaultCollapsed);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { deleteChatHistory, deleteChatById, userName } = useChatContext();
-
 
   // Determine if sidebar is collapsed (controlled or uncontrolled)
   const isCollapsed = externalIsCollapsed !== undefined ? externalIsCollapsed : internalIsCollapsed;
