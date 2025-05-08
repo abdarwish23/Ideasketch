@@ -157,8 +157,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       id: typeof window !== 'undefined' ? window.crypto.randomUUID() : Date.now().toString(),
     };
 
-    setChats((prevChats) =>
-      prevChats.map((chat) => {
+    setChats((prevChats) => {
+      return prevChats.map((chat) => {
         if (chat.id === chatId) {
           let nextTitle = chat.title; // Default to current title
           let nextFullTitle = chat.fullTitle; // Default to current full title
@@ -188,8 +188,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           return updatedChat;
         }
         return chat;
-      }),
-    );
+      });
+    });
     return message.id;
   };
 

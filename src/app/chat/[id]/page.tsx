@@ -86,18 +86,17 @@ export default function ChatPage() {
         while ((boundary = buffer.indexOf('\n')) !== -1) {
           const line = buffer.substring(0, boundary).trim();
           buffer = buffer.substring(boundary + 1); // Keep the remainder
-          buffer = ''; // Clear the buffer
           if (line.length === 0) continue; // Skip empty lines
 
-          // SSE data lines start with "data:". Extract the JSON.
-          if (line.startsWith('data:')) {
-            const jsonString = line.substring(5).trim(); // Remove "data:" and trim
-            try {
-              // Attempt to parse the JSON string
-              const parsed = JSON.parse(jsonString);
-              const textChunk = parsed.content;
-
-              if (typeof textChunk === 'string' && !stopGeneration && !abortControllerRef.current?.signal.aborted) {
+          // SSE data lines start with "data:" or "message:". Extract the JSON.
+          if (line.startsWith('message:') || line.startsWith('data:')) {
+            const jsonString = line.startsWith('message:') ? line.substring(7).trim() : line.substring(5).trim();
+            if (jsonString) {
+              try {
+                // Attempt to parse the JSON string
+                const parsed = JSON.parse(jsonString);
+              if (parsed.event === 'token' && typeof parsed.data === 'string') {
+                const textChunk = parsed.data;
                 fullAssistantResponse += textChunk;
 
                 // 5. Update the UI incrementally using the context function
@@ -110,6 +109,7 @@ export default function ChatPage() {
               }
             } catch (parseError) {
               console.warn('Failed to parse JSON chunk:', line, parseError);
+            }
             }
           }
         }

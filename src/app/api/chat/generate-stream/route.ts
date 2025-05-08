@@ -8,19 +8,29 @@ const callAPI = async (newMessageContent: string, userId: string, sessionId: str
     // throw new Error(`newMessageContent: ${newMessageContent} - userId:${userId} - sessionId:${sessionId}`);
 
     // Stream the response from the external API
+    const BASE_URL = 'https://flowise-13k6.onrender.com/api/v1/prediction/8ada17bf-c96e-43be-9b16-ec6d2dd1f7f4';
+    // const BASE_URL = 'https://mcp-patent-agent.onrender.com/api/query/stream';
 
-    const response = await fetch(`https://mcp-patent-agent.onrender.com/api/query/stream`, {
+    const response = await fetch(BASE_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer your-secure-api-token-here',
+      
+        Authorization: `Bearer ${process.env.API_KEY}`,
       },
       body: JSON.stringify({
-        user_session: {
-          user_id: `user-${userId}`,
-          session_id: `session-${sessionId}`,
+        // user_session: {
+        //   user_id: `user-${userId}`,
+        //   session_id: `session-${sessionId}`,
+        // },
+        // message: newMessageContent, // Use the actual newMessageContent for the message
+
+        question: newMessageContent,
+        streaming: true,
+        overrideConfig: {
+          sessionId: `session-${sessionId}`,
+          enableDetailedStreaming: true,
         },
-        message: newMessageContent, // Use the actual newMessageContent for the message
       }),
     });
 

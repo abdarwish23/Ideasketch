@@ -23,9 +23,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!chats.length) {
-      createNewChat();
-    }
     if (message.trim() && !isGenerating) {
       onSendMessage(message);
       setMessage(''); // Clear input after sending
@@ -35,6 +32,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
       }
     }
   };
+
+  useEffect(() => {
+    if (!chats.length) {
+      createNewChat();
+    }
+  }, [chats, createNewChat]);
 
   useEffect(() => {
     if (textareaRef.current) {

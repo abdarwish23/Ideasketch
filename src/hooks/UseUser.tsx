@@ -1,16 +1,16 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-const callQueryApi = async (message: string, userId: string, sessionId: string) => {
-  return await fetch(`/api/chat/query`, {
-    method: 'POST',
-    body: JSON.stringify({
-      message,
-      userId,
-      sessionId,
-    }),
-  });
-};
+// const callQueryApi = async (message: string, userId: string, sessionId: string) => {
+//   return await fetch(`/api/chat/query`, {
+//     method: 'POST',
+//     body: JSON.stringify({
+//       message,
+//       userId,
+//       sessionId,
+//     }),
+//   });
+// };
 
 const useUser = (message: string, userId: string, sessionId?: string) => {
   const [name, setName] = useState<string | null>(null);
@@ -35,17 +35,17 @@ const useUser = (message: string, userId: string, sessionId?: string) => {
           return;
         }
 
-        const res = await callQueryApi(message, userId, sessionId || '');
+        // const res = await callQueryApi(message, userId, sessionId || '');
 
         // if (!res.ok) {
         //   throw new Error(`API request failed with status ${res.status}`);
         // }
 
         try {
-          const json = await res.json();
-          const queryName = json.message;
-          console.log('queryName :>> ', queryName);
-          setName(queryName);
+          // const json = await res.json();
+          // const queryName = json.message;
+          // console.log('queryName :>> ', queryName);
+          // setName();
         } catch (jsonError) {
           console.error('Error parsing JSON response:', jsonError);
           throw new Error('Invalid response format from server');
