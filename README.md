@@ -233,4 +233,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-Created and maintained by [Your Name](https://github.com/yourusername)
+Created and maintained by: Asem Qaffaf, Ahmed B. Darwish
