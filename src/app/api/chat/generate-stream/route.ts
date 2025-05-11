@@ -9,14 +9,13 @@ const callAPI = async (newMessageContent: string, userId: string, sessionId: str
 
     // Stream the response from the external API
     const BASE_URL = 'https://flowise-13k6.onrender.com/api/v1/prediction/8ada17bf-c96e-43be-9b16-ec6d2dd1f7f4';
-    // const BASE_URL = 'https://mcp-patent-agent.onrender.com/api/query/stream';
 
     const response = await fetch(BASE_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       
-        Authorization: `Bearer ${process.env.API_KEY}`,
+        Authorization: `Bearer WKW_w9FCB8U7dFkGOzWk7m2VbhU_dIO8JJwdIoyCcmE`,
       },
       body: JSON.stringify({
         // user_session: {
